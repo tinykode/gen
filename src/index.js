@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const GHProvider = require('./providers/gh-provider');
 const GeminiProvider = require('./providers/gemini-provider');
+const CopilotProvider = require('./providers/copilot-provider');
 const Config = require('./config');
 const Installer = require('./installer');
 
@@ -10,7 +11,8 @@ class GenCLI {
         this.config = new Config();
         this.providers = [
             new GHProvider(),
-            new GeminiProvider()
+            new GeminiProvider(),
+            new CopilotProvider()
         ];
     }
 
