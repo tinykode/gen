@@ -1,5 +1,5 @@
-const child_process = require('child_process');
-const BaseProvider = require('./base-provider');
+import child_process from 'child_process';
+import BaseProvider from './base-provider.js';
 
 const execConfig = {
   encoding: 'utf8',
@@ -67,4 +67,4 @@ class CopilotProvider extends BaseProvider {
   }
 }
 
-module.exports = CopilotProvider;
+export default CopilotProvider;

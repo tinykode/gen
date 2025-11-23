@@ -1,4 +1,4 @@
-const Installer = require('../src/installer');
+import Installer from '../src/installer.js';
 
 const installer = new Installer();
 installer.install().catch(console.error);

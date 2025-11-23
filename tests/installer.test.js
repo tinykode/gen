@@ -1,10 +1,10 @@
-const { test, describe, beforeEach, afterEach, mock } = require('node:test');
-const assert = require('node:assert');
-const path = require('path');
-const fs = require('fs');
-const os = require('os');
-const Installer = require('../src/installer');
-const logger = require('../src/logger');
+import { test, describe, beforeEach, afterEach, mock } from 'node:test';
+import assert from 'node:assert';
+import path from 'path';
+import fs from 'fs';
+import os from 'os';
+import Installer from '../src/installer.js';
+import logger from '../src/logger.js';
 
 describe('Installer', () => {
     let tempDir;

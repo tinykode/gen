@@ -1,9 +1,9 @@
-const { test, describe, beforeEach, afterEach } = require('node:test');
-const assert = require('node:assert');
-const path = require('path');
-const fs = require('fs');
-const os = require('os');
-const Config = require('../src/config');
+import { test, describe, beforeEach, afterEach } from 'node:test';
+import assert from 'node:assert';
+import path from 'path';
+import fs from 'fs';
+import os from 'os';
+import Config from '../src/config.js';
 
 describe('Config', () => {
     let tempDir;

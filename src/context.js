@@ -1,6 +1,6 @@
-const os = require('os');
-const path = require('path');
-const fs = require('fs');
+import os from 'os';
+import path from 'path';
+import fs from 'fs';
 
 class Context {
     constructor() {
@@ -52,4 +52,4 @@ class Context {
     }
 }
 
-module.exports = Context;
+export default Context;

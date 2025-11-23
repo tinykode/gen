@@ -1,8 +1,8 @@
-const test = require('node:test');
-const assert = require('node:assert');
-const os = require('os');
-const path = require('path');
-const Context = require('../src/context');
+import test from 'node:test';
+import assert from 'node:assert';
+import os from 'os';
+import path from 'path';
+import Context from '../src/context.js';
 
 test('Context class', async (t) => {
     const context = new Context();

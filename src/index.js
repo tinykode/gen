@@ -1,12 +1,11 @@
 #!/usr/bin/env node
-const GHProvider = require('./providers/gh-provider');
-const GeminiProvider = require('./providers/gemini-provider');
-const CopilotProvider = require('./providers/copilot-provider');
-const Config = require('./config');
-const Installer = require('./installer');
-const logger = require('./logger');
-
-const Context = require('./context');
+import GHProvider from './providers/gh-provider.js';
+import GeminiProvider from './providers/gemini-provider.js';
+import CopilotProvider from './providers/copilot-provider.js';
+import Config from './config.js';
+import Installer from './installer.js';
+import logger from './logger.js';
+import Context from './context.js';
 
 class GenCLI {
   constructor() {
@@ -242,8 +241,6 @@ async function main() {
   }
 }
 
-    if (require.main === module) {
-      main().catch(logger.error);
-    }
+main().catch(logger.error);
 
-    module.exports = GenCLI;
+export default GenCLI;

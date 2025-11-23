@@ -1,7 +1,7 @@
-const { test, describe, beforeEach, afterEach } = require('node:test');
-const assert = require('node:assert');
-const child_process = require('child_process');
-const CopilotProvider = require('../../src/providers/copilot-provider');
+import { test, describe, beforeEach, afterEach } from 'node:test';
+import assert from 'node:assert';
+import child_process from 'child_process';
+import CopilotProvider from '../../src/providers/copilot-provider.js';
 
 describe('CopilotProvider', () => {
     let execSyncMock;

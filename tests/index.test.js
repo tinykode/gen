@@ -1,6 +1,6 @@
-const { test, describe, beforeEach, afterEach } = require('node:test');
-const assert = require('node:assert');
-const GenCLI = require('../src/index');
+import { test, describe, beforeEach, afterEach } from 'node:test';
+import assert from 'node:assert';
+import GenCLI from '../src/index.js';
 
 describe('GenCLI', () => {
     test('should initialize with default providers', () => {

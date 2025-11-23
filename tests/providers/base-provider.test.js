@@ -1,6 +1,6 @@
-const { test, describe } = require('node:test');
-const assert = require('node:assert');
-const BaseProvider = require('../../src/providers/base-provider');
+import { test, describe } from 'node:test';
+import assert from 'node:assert';
+import BaseProvider from '../../src/providers/base-provider.js';
 
 describe('BaseProvider', () => {
     test('should throw error for unimplemented methods', async () => {

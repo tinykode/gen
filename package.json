@@ -3,6 +3,7 @@
   "version": "0.0.4",
   "private": false,
   "description": "Generate bash commands from natural language using existing AI tools (GitHub Copilot CLI, Gemini CLI)",
+  "type": "module",
   "main": "./src/index.js",
   "bin": {
     "gen": "src/index.js"

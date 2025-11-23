@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
-const readline = require('readline');
-const logger = require('./logger');
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
+import readline from 'readline';
+import { fileURLToPath } from 'url';
+import logger from './logger.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 class Installer {
   constructor() {
@@ -125,4 +129,4 @@ fi`;
   }
 }
 
-module.exports = Installer;
+export default Installer;

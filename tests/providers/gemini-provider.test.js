@@ -1,7 +1,7 @@
-const { test, describe, beforeEach } = require('node:test');
-const assert = require('node:assert');
-const child_process = require('child_process');
-const GeminiProvider = require('../../src/providers/gemini-provider');
+import { test, describe, beforeEach } from 'node:test';
+import assert from 'node:assert';
+import child_process from 'child_process';
+import GeminiProvider from '../../src/providers/gemini-provider.js';
 
 describe('GeminiProvider', () => {
     let execSyncMock;

@@ -1,7 +1,7 @@
-const os = require('os');
-const fs = require('fs');
-const path = require('path');
-const logger = require('./logger');
+import os from 'os';
+import fs from 'fs';
+import path from 'path';
+import logger from './logger.js';
 
 class Config {
     constructor() {
@@ -19,7 +19,7 @@ class Config {
         } catch (error) {
             logger.warn('Warning: Could not load config file, using defaults');
         }
-        
+
         return {
             provider: null, // null means auto-detect
             providers: {}
@@ -50,4 +50,4 @@ class Config {
     }
 }
 
-module.exports = Config;
+export default Config;
