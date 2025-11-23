@@ -6,165 +6,165 @@ const Config = require('./config');
 const Installer = require('./installer');
 
 class GenCLI {
-    constructor() {
-        this.installer = new Installer();
-        this.config = new Config();
-        this.providers = [
-            new GHProvider(),
-            new GeminiProvider(),
-            new CopilotProvider()
-        ];
-    }
+  constructor() {
+    this.installer = new Installer();
+    this.config = new Config();
+    this.providers = [
+      new GHProvider(),
+      new GeminiProvider(),
+      new CopilotProvider()
+    ];
+  }
 
-    configure() {
-        this.installer.install().catch(err => {
-            console.error('Failed to configure Gen:', err);
-        });
-    }
+  configure() {
+    this.installer.install().catch(err => {
+      console.error('Failed to configure Gen:', err);
+    });
+  }
 
-    async findAvailableProvider() {
-        const preferredProvider = this.config.getProvider();
+  async findAvailableProvider() {
+    const preferredProvider = this.config.getProvider();
 
-        // If user has set a preference, try that first
-        if (preferredProvider) {
-            const provider = this.providers.find(p => p.name === preferredProvider);
-            if (provider) {
-                const status = await provider.getStatus();
-                if (status.status === 'ready') {
-                    return provider;
-                } else {
-                    throw new Error(`Preferred provider '${preferredProvider}' is ${status.status}`);
-                }
-            }
-        }
-
-        // Auto-detect first available provider
-        for (const provider of this.providers) {
-            const status = await provider.getStatus();
-            if (status.status === 'ready') {
-                return provider;
-            }
-        }
-
-        throw new Error(`No available providers found. Please install and authenticate any of the following:\n- ${this.providers.map(p => p.name).join('\n- ')}`);
-    }
-
-    async findSpecificProvider(providerName) {
-        const provider = this.providers.find(p => p.name === providerName);
-        if (!provider) {
-            throw new Error(`Provider '${providerName}' not found. Available: ${this.providers.map(p => p.name).join(', ')}`);
-        }
-
+    // If user has set a preference, try that first
+    if (preferredProvider) {
+      const provider = this.providers.find(p => p.name === preferredProvider);
+      if (provider) {
         const status = await provider.getStatus();
-        if (status.status !== 'ready') {
-            throw new Error(`Provider '${providerName}' is ${status.status}${status.message ? ': ' + status.message : ''}`);
+        if (status.status === 'ready') {
+          return provider;
+        } else {
+          throw new Error(`Preferred provider '${preferredProvider}' is ${status.status}`);
         }
+      }
+    }
 
+    // Auto-detect first available provider
+    for (const provider of this.providers) {
+      const status = await provider.getStatus();
+      if (status.status === 'ready') {
         return provider;
+      }
     }
 
-    async generateCommand(query, context = '', oneTimeProvider = null) {
-        const provider = oneTimeProvider ?
-            await this.findSpecificProvider(oneTimeProvider) :
-            await this.findAvailableProvider();
-        return await provider.generateCommand(query, context);
+    throw new Error(`No available providers found. Please install and authenticate any of the following:\n- ${this.providers.map(p => p.name).join('\n- ')}`);
+  }
+
+  async findSpecificProvider(providerName) {
+    const provider = this.providers.find(p => p.name === providerName);
+    if (!provider) {
+      throw new Error(`Provider '${providerName}' not found. Available: ${this.providers.map(p => p.name).join(', ')}`);
     }
 
-    async listProviders() {
-        console.log('Available providers:');
-
-        for (const provider of this.providers) {
-            const status = await provider.getStatus();
-            const current = this.config.getProvider() === provider.name ? ' (current)' : '';
-            const statusIcon = status.status === 'ready' ? '✅' :
-                status.status === 'not_authenticated' ? '⚠️' : '❌';
-
-            const statusText = status.status === 'error' && status.message ?
-                `${status.status} (${status.message})` : status.status;
-
-            console.log(`  ${statusIcon} ${provider.name}${current} - ${statusText}`);
-        }
-
-        if (!this.config.getProvider()) {
-            console.log('\nNo provider set (auto-detect mode)');
-        }
+    const status = await provider.getStatus();
+    if (status.status !== 'ready') {
+      throw new Error(`Provider '${providerName}' is ${status.status}${status.message ? ': ' + status.message : ''}`);
     }
 
-    setProvider(providerName) {
-        const validProviders = this.providers.map(p => p.name);
+    return provider;
+  }
 
-        if (providerName === 'auto') {
-            this.config.setProvider(null);
-            console.log('Provider set to auto-detect');
-            return;
-        }
+  async generateCommand(query, context = '', oneTimeProvider = null) {
+    const provider = oneTimeProvider ?
+      await this.findSpecificProvider(oneTimeProvider) :
+      await this.findAvailableProvider();
+    return await provider.generateCommand(query, context);
+  }
 
-        if (!validProviders.includes(providerName)) {
-            throw new Error(`Invalid provider '${providerName}'. Available: ${validProviders.join(', ')}, auto`);
-        }
+  async listProviders() {
+    console.log('Available providers:');
 
-        this.config.setProvider(providerName);
-        console.log(`Provider set to: ${providerName}`);
+    for (const provider of this.providers) {
+      const status = await provider.getStatus();
+      const current = this.config.getProvider() === provider.name ? ' (current)' : '';
+      const statusIcon = status.status === 'ready' ? '✅' :
+        status.status === 'not_authenticated' ? '⚠️' : '❌';
+
+      const statusText = status.status === 'error' && status.message ?
+        `${status.status} (${status.message})` : status.status;
+
+      console.log(`  ${statusIcon} ${provider.name}${current} - ${statusText}`);
     }
+
+    if (!this.config.getProvider()) {
+      console.log('\nNo provider set (auto-detect mode)');
+    }
+  }
+
+  setProvider(providerName) {
+    const validProviders = this.providers.map(p => p.name);
+
+    if (providerName === 'auto') {
+      this.config.setProvider(null);
+      console.log('Provider set to auto-detect');
+      return;
+    }
+
+    if (!validProviders.includes(providerName)) {
+      throw new Error(`Invalid provider '${providerName}'. Available: ${validProviders.join(', ')}, auto`);
+    }
+
+    this.config.setProvider(providerName);
+    console.log(`Provider set to: ${providerName}`);
+  }
 }
 
 function parseArgs() {
-    const args = process.argv.slice(2);
-    const options = {
-        message: '',
-        context: '', // For future context implementation
-        help: false,
-        provider: null,
-        oneTimeProvider: null, // For -p option
-        listProviders: false,
-        setProvider: null,
-        configure: false
-    };
+  const args = process.argv.slice(2);
+  const options = {
+    message: '',
+    context: '', // For future context implementation
+    help: false,
+    provider: null,
+    oneTimeProvider: null, // For -p option
+    listProviders: false,
+    setProvider: null,
+    configure: false
+  };
 
-    for (let i = 0; i < args.length; i++) {
-        const arg = args[i];
-        const next = args[i + 1];
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    const next = args[i + 1];
 
-        switch (arg) {
-            case '-m':
-            case '--message':
-                options.message = next;
-                i++;
-                break;
-            case '-c':
-            case '--context':
-                // Placeholder for future context implementation
-                options.context = next;
-                i++;
-                break;
-            case '-p':
-            case '--provider':
-                options.oneTimeProvider = next;
-                i++;
-                break;
-            case '-h':
-            case '--help':
-                options.help = true;
-                break;
-            case 'provider':
-                if (next === '-list' || next === '--list') {
-                    options.listProviders = true;
-                    i++;
-                } else if (next === '-set' || next === '--set') {
-                    options.setProvider = args[i + 2];
-                    i += 2;
-                }
-                break;
-            case "configure":
-                options.configure = true;
+    switch (arg) {
+      case '-m':
+      case '--message':
+        options.message = next;
+        i++;
+        break;
+      case '-c':
+      case '--context':
+        // Placeholder for future context implementation
+        options.context = next;
+        i++;
+        break;
+      case '-p':
+      case '--provider':
+        options.oneTimeProvider = next;
+        i++;
+        break;
+      case '-h':
+      case '--help':
+        options.help = true;
+        break;
+      case 'provider':
+        if (next === '-list' || next === '--list') {
+          options.listProviders = true;
+          i++;
+        } else if (next === '-set' || next === '--set') {
+          options.setProvider = args[i + 2];
+          i += 2;
         }
+        break;
+      case "configure":
+        options.configure = true;
     }
+  }
 
-    return options;
+  return options;
 }
 
 function showHelp() {
-    console.log(`
+  console.log(`
 Gen CLI - Generate bash commands from natural language using AI
 
 Usage: 
@@ -192,48 +192,48 @@ Examples:
 }
 
 async function main() {
-    const options = parseArgs();
+  const options = parseArgs();
 
-    if (options.help) {
-        showHelp();
-        return;
+  if (options.help) {
+    showHelp();
+    return;
+  }
+
+  const cli = new GenCLI();
+
+  try {
+    if (options.configure) {
+      cli.configure();
+      return;
     }
 
-    const cli = new GenCLI();
-
-    try {
-        if (options.configure) {
-            cli.configure();
-            return;
-        }
-
-        if (options.listProviders) {
-            await cli.listProviders();
-            return;
-        }
-
-        if (options.setProvider) {
-            cli.setProvider(options.setProvider);
-            return;
-        }
-
-        // should be last
-        if (!options.message) {
-            showHelp();
-            process.exit(1);
-        }
-
-        const command = await cli.generateCommand(options.message, options.context, options.oneTimeProvider);
-        console.log(command);
-
-    } catch (error) {
-        console.error('❌ Error:', error.message);
-        process.exit(1);
+    if (options.listProviders) {
+      await cli.listProviders();
+      return;
     }
+
+    if (options.setProvider) {
+      cli.setProvider(options.setProvider);
+      return;
+    }
+
+    // should be last
+    if (!options.message) {
+      showHelp();
+      process.exit(1);
+    }
+
+    const command = await cli.generateCommand(options.message, options.context, options.oneTimeProvider);
+    console.log(command);
+
+  } catch (error) {
+    console.error('❌ Error:', error.message);
+    process.exit(1);
+  }
 }
 
 if (require.main === module) {
-    main().catch(console.error);
+  main().catch(console.error);
 }
 
 module.exports = GenCLI;
