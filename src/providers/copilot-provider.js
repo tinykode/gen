@@ -1,4 +1,4 @@
-const { execSync } = require('child_process');
+const child_process = require('child_process');
 const BaseProvider = require('./base-provider');
 
 const execConfig = {
@@ -16,7 +16,7 @@ class CopilotProvider extends BaseProvider {
   async isInstalled() {
     try {
       // Check if copilot command exists
-      execSync('which copilot', execConfig);
+      child_process.execSync('which copilot', execConfig);
       return true;
     } catch (error) {
       return false;
@@ -29,7 +29,7 @@ class CopilotProvider extends BaseProvider {
   }
 
   async generateCommand(query, context = '') {
-    const systemPrompt = "You are an expert bash command generator for zsh on macOS. Generate a precise bash command that accomplishes the user's request. Use zsh-specific syntax when relevant, optimize for macOS compatibility, prefer commonly available tools, and include necessary error handling. Do not include any explanations or additional information. Do not use any tools you don't need to explore for context. IMPORTANT: Return the command wrapped in <command></command> tags with no explanations.";
+    const systemPrompt = "You are an expert bash command generator. Generate a precise bash command that accomplishes the user's request. Optimize for compatibility with the System described in the provided context, prefer commonly available tools, and include necessary error handling. Do not include any explanations or additional information. Do not use any tools you don't need to explore for context. IMPORTANT: Return the command wrapped in <command></command> tags with no explanations.";
 
     const fullPrompt = context ?
       `${systemPrompt} Context: ${context}. User query: ${query}` :
@@ -39,7 +39,7 @@ class CopilotProvider extends BaseProvider {
       // Escape double quotes in the prompt to avoid shell issues
       const escapedPrompt = fullPrompt.replace(/"/g, '\\"');
 
-      const output = execSync(`copilot -p "${escapedPrompt}"`, execConfig);
+      const output = child_process.execSync(`copilot -p "${escapedPrompt}"`, execConfig);
 
       return this.extractCommand(output);
     } catch (error) {

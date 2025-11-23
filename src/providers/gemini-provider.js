@@ -1,4 +1,4 @@
-const { execSync } = require('child_process');
+const child_process = require('child_process');
 const BaseProvider = require('./base-provider');
 
 const execConfig = {
@@ -16,7 +16,7 @@ class GeminiProvider extends BaseProvider {
 
   async isInstalled() {
     try {
-      const output = execSync('gemini --version', execConfig);
+      const output = child_process.execSync('gemini --version', execConfig);
       const versionMatch = output.match(/(\d+\.\d+\.\d+)/);
 
       if (!versionMatch) {
@@ -39,7 +39,7 @@ class GeminiProvider extends BaseProvider {
 
   async isAuthenticated() {
     try {
-      const output = execSync('gemini -p hi', {
+      const output = child_process.execSync('gemini -p hi', {
         ...execConfig,
         timeout: 10000
       });
@@ -50,14 +50,14 @@ class GeminiProvider extends BaseProvider {
   }
 
   async generateCommand(query, context = '') {
-    const systemPrompt = "You are an expert bash command generator for zsh on macOS. Generate a precise bash command that accomplishes the user's request. Use zsh-specific syntax when relevant, optimize for macOS compatibility, prefer commonly available tools, and include necessary error handling. IMPORTANT: Return the command wrapped in <command></command> tags with no explanations.";
+    const systemPrompt = "You are an expert bash command generator. Generate a precise bash command that accomplishes the user's request. Optimize for compatibility with the System described in the provided context, prefer commonly available tools, and include necessary error handling. Do not include any explanations or additional information. Do not use any tools you don't need to explore for context. IMPORTANT: Return the command wrapped in <command></command> tags with no explanations.";
 
     const fullPrompt = context ?
       `${systemPrompt}; Context: ${context}; User query: ${query}` :
       `${systemPrompt}; User query: ${query}`;
 
     try {
-      const output = execSync(`gemini -p "${fullPrompt}"`, {
+      const output = child_process.execSync(`gemini -p "${fullPrompt}"`, {
         ...execConfig,
         timeout: 30000
       });

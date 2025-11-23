@@ -4,11 +4,15 @@ const GeminiProvider = require('./providers/gemini-provider');
 const CopilotProvider = require('./providers/copilot-provider');
 const Config = require('./config');
 const Installer = require('./installer');
+const logger = require('./logger');
+
+const Context = require('./context');
 
 class GenCLI {
   constructor() {
     this.installer = new Installer();
     this.config = new Config();
+    this.context = new Context();
     this.providers = [
       new GHProvider(),
       new GeminiProvider(),
@@ -18,7 +22,7 @@ class GenCLI {
 
   configure() {
     this.installer.install().catch(err => {
-      console.error('Failed to configure Gen:', err);
+      logger.error('Failed to configure Gen:', err);
     });
   }
 
@@ -63,15 +67,20 @@ class GenCLI {
     return provider;
   }
 
-  async generateCommand(query, context = '', oneTimeProvider = null) {
+  async generateCommand(query, userContext = '', oneTimeProvider = null) {
     const provider = oneTimeProvider ?
       await this.findSpecificProvider(oneTimeProvider) :
       await this.findAvailableProvider();
-    return await provider.generateCommand(query, context);
+
+    const systemContext = this.context.gather();
+    const contextString = `OS: ${systemContext.os.platform} ${systemContext.os.release}, Shell: ${systemContext.shell}, CWD: ${systemContext.cwd}, Files: ${JSON.stringify(systemContext.directoryContent.map(f => f.name))}`;
+    const fullContext = userContext ? `${userContext}. System Info: ${contextString}` : `System Info: ${contextString}`;
+
+    return await provider.generateCommand(query, fullContext);
   }
 
   async listProviders() {
-    console.log('Available providers:');
+    logger.info('Available providers:');
 
     for (const provider of this.providers) {
       const status = await provider.getStatus();
@@ -82,11 +91,11 @@ class GenCLI {
       const statusText = status.status === 'error' && status.message ?
         `${status.status} (${status.message})` : status.status;
 
-      console.log(`  ${statusIcon} ${provider.name}${current} - ${statusText}`);
+      logger.info(`  ${statusIcon} ${provider.name}${current} - ${statusText}`);
     }
 
     if (!this.config.getProvider()) {
-      console.log('\nNo provider set (auto-detect mode)');
+      logger.info('\nNo provider set (auto-detect mode)');
     }
   }
 
@@ -95,7 +104,7 @@ class GenCLI {
 
     if (providerName === 'auto') {
       this.config.setProvider(null);
-      console.log('Provider set to auto-detect');
+      logger.info('Provider set to auto-detect');
       return;
     }
 
@@ -104,7 +113,7 @@ class GenCLI {
     }
 
     this.config.setProvider(providerName);
-    console.log(`Provider set to: ${providerName}`);
+    logger.info(`Provider set to: ${providerName}`);
   }
 }
 
@@ -157,6 +166,7 @@ function parseArgs() {
         break;
       case "configure":
         options.configure = true;
+        break;
     }
   }
 
@@ -164,7 +174,7 @@ function parseArgs() {
 }
 
 function showHelp() {
-  console.log(`
+  logger.info(`
 Gen CLI - Generate bash commands from natural language using AI
 
 Usage: 
@@ -224,16 +234,16 @@ async function main() {
     }
 
     const command = await cli.generateCommand(options.message, options.context, options.oneTimeProvider);
-    console.log(command);
+    logger.info(command);
 
   } catch (error) {
-    console.error('❌ Error:', error.message);
+    logger.error('❌ Error:', error.message);
     process.exit(1);
   }
 }
 
-if (require.main === module) {
-  main().catch(console.error);
-}
+    if (require.main === module) {
+      main().catch(logger.error);
+    }
 
-module.exports = GenCLI;
+    module.exports = GenCLI;

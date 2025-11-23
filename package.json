@@ -9,7 +9,8 @@
   },
   "scripts": {
     "postinstall": "node scripts/install.js",
-    "configure": "node scripts/install.js"
+    "configure": "node scripts/install.js",
+    "test": "LOG_LEVEL=0 node --test"
   },
   "keywords": [
     "bash",

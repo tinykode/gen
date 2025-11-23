@@ -1,6 +1,7 @@
 const os = require('os');
 const fs = require('fs');
 const path = require('path');
+const logger = require('./logger');
 
 class Config {
     constructor() {
@@ -16,7 +17,7 @@ class Config {
                 return JSON.parse(content);
             }
         } catch (error) {
-            console.warn('Warning: Could not load config file, using defaults');
+            logger.warn('Warning: Could not load config file, using defaults');
         }
         
         return {
