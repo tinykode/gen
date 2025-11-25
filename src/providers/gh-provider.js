@@ -12,6 +12,7 @@ class GHProvider extends BaseProvider {
     super();
     this.name = 'gh';
     this.minVersion = '2.0.0';
+    this.internal = true;
   }
 
   async isInstalled() {

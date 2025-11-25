@@ -49,13 +49,13 @@ class GenCLI {
       }
     }
 
-    throw new Error(`No available providers found. Please install and authenticate any of the following:\n- ${this.providers.map(p => p.name).join('\n- ')}`);
+    throw new Error(`No available providers found. Please install and authenticate any of the following:\n- ${this.providers.filter(p => !p.internal).map(p => p.name).join('\n- ')}`);
   }
 
   async findSpecificProvider(providerName) {
     const provider = this.providers.find(p => p.name === providerName);
     if (!provider) {
-      throw new Error(`Provider '${providerName}' not found. Available: ${this.providers.map(p => p.name).join(', ')}`);
+      throw new Error(`Provider '${providerName}' not found. Available: ${this.providers.filter(p => !p.internal).map(p => p.name).join(', ')}`);
     }
 
     const status = await provider.getStatus();
@@ -82,6 +82,7 @@ class GenCLI {
     logger.info('Available providers:');
 
     for (const provider of this.providers) {
+      if (provider.internal) continue;
       const status = await provider.getStatus();
       const current = this.config.getProvider() === provider.name ? ' (current)' : '';
       const statusIcon = status.status === 'ready' ? '✅' :
@@ -108,7 +109,7 @@ class GenCLI {
     }
 
     if (!validProviders.includes(providerName)) {
-      throw new Error(`Invalid provider '${providerName}'. Available: ${validProviders.join(', ')}, auto`);
+      throw new Error(`Invalid provider '${providerName}'. Available: ${validProviders.filter(p => p !== 'gh').join(', ')}, auto`);
     }
 
     this.config.setProvider(providerName);
@@ -136,6 +137,7 @@ function parseArgs() {
     switch (arg) {
       case '-m':
       case '--message':
+        // Legacy support - message as flag
         options.message = next;
         i++;
         break;
@@ -166,6 +168,15 @@ function parseArgs() {
       case "configure":
         options.configure = true;
         break;
+      default:
+        // If it starts with -, it's an unknown flag
+        if (arg.startsWith('-')) {
+          logger.warn(`Warning: Unknown option '${arg}'`);
+        } else if (!options.message && !options.configure && !options.listProviders && !options.setProvider) {
+          // Treat first non-flag argument as message if not already set
+          // and not a subcommand
+          options.message = arg;
+        }
     }
   }
 
@@ -177,26 +188,25 @@ function showHelp() {
 Gen CLI - Generate bash commands from natural language using AI
 
 Usage: 
-  gen -m "your message here"
-  gen -m "your message here" -p <provider>
+  gen "your message here"
+  gen "your message here" -p <provider>
   gen provider -list
   gen provider -set <provider>
 
 Options:
-  -m, --message <text>    Natural language description (required)
-  -p, --provider <name>   Use specific provider for this command (gh, gemini)
+  -p, --provider <name>   Use specific provider for this command (gemini, copilot)
   -c, --context <num>     Context from previous commands (future feature)
   -h, --help              Show this help message
 
 Provider Commands:
   provider -list          List all available providers and their status
-  provider -set <name>    Set preferred provider (gh, gemini, auto)
+  provider -set <name>    Set preferred provider (gemini, copilot, auto)
 
 Examples:
-  gen -m "List all directories in current folder"
-  gen -m "Find files larger than 100MB" -p gemini
+  gen "List all directories in current folder"
+  gen "Find files larger than 100MB" -p gemini
   gen provider -list
-  gen provider -set gh
+  gen provider -set copilot
 `);
 }
 

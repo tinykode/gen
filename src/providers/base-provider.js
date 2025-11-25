@@ -5,6 +5,7 @@ class BaseProvider {
   constructor() {
     this.name = '';
     this.minVersion = '';
+    this.internal = false;
   }
 
   /**

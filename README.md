@@ -1,177 +1,67 @@
 # tinykit/gen
 
-⚠️ **For experienced developers only** ⚠️
-
-Generate bash commands from natural language using your existing AI tools. Commands are generated ready-to-execute - no training wheels.
+Generate bash commands from natural language using AI. Commands are generated directly into your terminal, ready to execute.
 
 ## Safety Warning
 
-This tool is **dangerous**:
+⚠️ **For vibecoding only** ⚠️
 
-- ❌ No command explanation
-- ❌ No undo functionality
-- ❌ ✅ Commands are one Enter key away from execution
+This tool is designed for people who copy-paste commands from StackOverflow and ChatGPT without understanding them. If that's not you, you probably don't need this.
 
-**Perfect for**: 
-- Senior developers
-- Sysadmins
-- Power users who value speed
-- **People who blindly paste commands without understanding them.**
+Commands appear in your terminal input line with no explanation or confirmation. One Enter key away from execution.
 
-**Terrible for**:
-- Junior developers
-- Learning environments
-- Production servers
-- Your grandma
+## Disclaimer
 
-## Features
-
-- 🤖 **Uses tools you already have**: GitHub Copilot CLI, Gemini CLI
-- ⚡ **Instant execution**: Commands appear in your terminal input line
-- 🔄 **Provider switching**: Use different AI models per command  
-- 🛡️ **For experts only**: Assumes you know what you're doing
+Use at your own risk. This tool can generate destructive commands. But hey, you're already copy-pasting from ChatGPT anyway.
 
 ## Installation
 
 ```bash
 npm install -g @tinykit/gen
-```
-
-After installation, you can run `gen init` to add a source line to your `~/.zshrc` that loads the gen functions from the global package.
-
-```bash
-gen init
-```
-
-You will then need to restart the terminal or source the `~/.zshrc` file.
-
-```bash
+gen configure
 source ~/.zshrc
 ```
 
 ## Prerequisites
 
-You need at least one of these AI CLI tools installed and authenticated:
+Install one of these AI tools:
 
-### GitHub Copilot CLI
+**GitHub Copilot CLI**:
 ```bash
-# Install GitHub CLI with Copilot
-gh extension install github/gh-copilot
-
-# Authenticate
-gh auth login
+npm install -g @github/copilot
 ```
 
-### Gemini CLI
+**Gemini CLI**:
 ```bash
-# Install gemini-cli
 npm install -g gemini-cli
-
-# Authenticate with your API key
 gemini config set apiKey YOUR_API_KEY
 ```
 
 ## Usage
 
-### Basic Command Generation
 ```bash
-gen -m "find all files larger than 100MB"
-# → Command appears in terminal: find . -size +100M -type f -ls
+gen "find all files larger than 100MB"
+# → Command appears: find . -size +100M -type f -ls
 # → Press Enter to execute
+
+gen "compress old log files" -p gemini
+gen "kill all processes on port 3000"
 ```
 
-### Use Specific Provider
-```bash
-gen -m "compress old log files" -p gemini
-gen -m "monitor CPU usage" -p gh
-```
-
-### Provider Management
-```bash
-# List available providers
-gen provider -list
-
-# Set default provider
-gen provider -set gh
-```
-
-## Examples
+## Provider Management
 
 ```bash
-# File operations
-gen -m "delete all node_modules folders"
-gen -m "find duplicate files in current directory"
-gen -m "compress all files modified today"
-
-# System monitoring
-gen -m "show top 10 memory consuming processes"
-gen -m "monitor network connections"
-gen -m "check disk usage by directory"
-
-# Development workflow
-gen -m "kill all processes on port 3000"
-gen -m "find all TODO comments in JavaScript files"
-gen -m "count lines of code by file type"
+gen provider -list          # List available providers
+gen provider -set copilot   # Set default provider
 ```
 
 ## How it Works
 
 1. Uses your existing AI CLI tools (no new subscriptions)
-2. Sends natural language prompt to AI
-3. Parses generated command from AI response
-4. Places command in your zsh input line using `print -z`
-5. You review and press Enter to execute
-
-## Supported Providers
-
-- **GitHub Copilot CLI**: `gh copilot suggest`
-- **Gemini CLI**: `gemini -p`
-- **Extensible**: Easy to add new providers
-
-## Configuration
-
-Config file: `~/.tinykit/gen-config` (created in home directory)
-
-```json
-{
-  "provider": "gh",  // or "gemini", null for auto-detect
-  "providers": {}
-}
-```
-
-## Troubleshooting
-
-### Commands not appearing in terminal
-- Ensure you restarted your terminal after installation
-- Run `source ~/.zshrc` to reload functions
-
-### Provider not working
-```bash
-# Check provider status
-gen provider -list
-
-# Test authentication
-gh auth status        # for GitHub Copilot
-gemini -p "test"      # for Gemini
-```
-
-### Remove from .zshrc
-Remove the block starting with `# Gen - Auto-generated` in `~/.zshrc`.
-
-## Contributing
-
-Contributions welcome! This tool follows YAGNI principles - keep it simple.
-
-### Adding New Providers
-
-1. Create provider class extending `BaseProvider`
-2. Implement `isInstalled()`, `isAuthenticated()`, `generateCommand()`
-3. Add to provider list in `src/index.js`
-
-## License
-
-MIT
+2. Sends your prompt to AI
+3. Places generated command in your terminal using `print -z`
+4. You press Enter to execute
 
 ## Disclaimer
 
-Use at your own risk. This tool can generate destructive commands. Always review commands before execution.
+Use at your own risk. This tool can generate destructive commands. But hey, you're already copy-pasting from ChatGPT anyway.
