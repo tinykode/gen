@@ -10,7 +10,7 @@
 2. **Test installation locally**:
 ```bash
 npm pack
-npm install -g ./tinykit-gen-1.0.0.tgz
+npm install -g ./tinykode-gen-1.0.0.tgz
 gen --help
 ```3. **Publish to npm**:
    ```bash

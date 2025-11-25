@@ -93,13 +93,13 @@ fi`;
       const sourceBlock = this.getImportScriptsContent(this.functionsFile);
       const zshrcContent = fs.readFileSync(this.zshrcPath, 'utf8');
 
-      // if TINYKIT_GEN tags are in file replaced the content inside with the source block
-      if (zshrcContent.includes('# TINYKIT_GEN_START')) {
-        const updatedZshrcContent = zshrcContent.replace(/# TINYKIT_GEN_START[\s\S]*?# TINYKIT_GEN_END/, `# TINYKIT_GEN_START\n${sourceBlock}\n# TINYKIT_GEN_END`);
+      // if tinykode_GEN tags are in file replaced the content inside with the source block
+      if (zshrcContent.includes('# tinykode_GEN_START')) {
+        const updatedZshrcContent = zshrcContent.replace(/# tinykode_GEN_START[\s\S]*?# tinykode_GEN_END/, `# tinykode_GEN_START\n${sourceBlock}\n# tinykode_GEN_END`);
         fs.writeFileSync(this.zshrcPath, updatedZshrcContent);
       } else {
         // if not, appended to the file
-        fs.appendFileSync(this.zshrcPath, `\n# TINYKIT_GEN_START\n${sourceBlock}\n# TINYKIT_GEN_END`);
+        fs.appendFileSync(this.zshrcPath, `\n# tinykode_GEN_START\n${sourceBlock}\n# tinykode_GEN_END`);
       }
 
       logger.info('');

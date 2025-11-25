@@ -60,7 +60,7 @@ describe('Installer', () => {
         installer.installZshFunctions();
 
         const content = fs.readFileSync(zshrcPath, 'utf8');
-        assert.ok(content.includes('# TINYKIT_GEN_START'));
+        assert.ok(content.includes('# tinykode_GEN_START'));
         assert.ok(content.includes(installer.functionsFile));
     });
 });

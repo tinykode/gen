@@ -1,4 +1,4 @@
-# tinykit/gen
+# tinykode/gen
 
 Generate bash commands from natural language using AI. Commands are generated directly into your terminal, ready to execute.
 

@@ -6,7 +6,7 @@ import logger from './logger.js';
 class Config {
     constructor() {
         this.homeDir = os.homedir();
-        this.configPath = path.join(this.homeDir, '.tinykit/gen-config');
+        this.configPath = path.join(this.homeDir, '.tinykode/gen-config');
         this.config = this.loadConfig();
     }
 

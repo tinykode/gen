@@ -12,7 +12,7 @@ describe('Config', () => {
 
     beforeEach(() => {
         tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gen-test-'));
-        configPath = path.join(tempDir, '.tinykit/gen-config');
+        configPath = path.join(tempDir, '.tinykode/gen-config');
 
         originalHomedir = os.homedir;
         os.homedir = () => tempDir;
