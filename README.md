@@ -17,7 +17,7 @@ Use at your own risk. This tool can generate destructive commands. But hey, you'
 ## Installation
 
 ```bash
-npm install -g @tinykit/gen
+npm install -g @tinykode/gen
 gen configure
 source ~/.zshrc
 ```

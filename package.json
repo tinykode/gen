@@ -1,5 +1,5 @@
 {
-  "name": "@tinykit/gen",
+  "name": "@tinykode/gen",
   "version": "0.0.4",
   "private": false,
   "description": "Generate bash commands from natural language using existing AI tools (GitHub Copilot CLI, Gemini CLI)",

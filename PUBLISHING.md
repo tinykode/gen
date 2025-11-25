@@ -35,7 +35,7 @@ npm version major && npm publish
 
 ```bash
 # After publishing
-npm install -g @tinykit/gen
+npm install -g @tinykode/gen
 
 # Test
 gen --help
