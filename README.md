@@ -44,8 +44,12 @@ npm install -g @github/copilot
 
 **Gemini CLI**:
 ```bash
-npm install -g gemini-cli
-gemini config set apiKey YOUR_API_KEY
+npm install -g @google/gemini-cli
+```
+
+**Claude Code**:
+```bash
+npm install -g @anthropic-ai/claude-code
 ```
 
 ## Usage
@@ -63,7 +67,8 @@ gen "kill all processes on port 3000"
 
 ```bash
 gen provider -list          # List available providers
-gen provider -set copilot   # Set default provider
+gen provider -set copilot   # Set default provider to Copilot
+gen provider -set claude    # Set default provider to Claude
 ```
 
 ## How it Works

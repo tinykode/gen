@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url';
 import GHProvider from './providers/gh-provider.js';
 import GeminiProvider from './providers/gemini-provider.js';
 import CopilotProvider from './providers/copilot-provider.js';
+import ClaudeProvider from './providers/claude-provider.js';
 import Config from './config.js';
 import Installer from './installer.js';
 import logger from './logger.js';
@@ -16,7 +17,8 @@ class GenCLI {
     this.providers = [
       new GHProvider(),
       new GeminiProvider(),
-      new CopilotProvider()
+      new CopilotProvider(),
+      new ClaudeProvider()
     ];
   }
 
@@ -189,13 +191,13 @@ Usage:
   gen provider -set <provider>
 
 Options:
-  -p, --provider <name>   Use specific provider for this command (gemini, copilot)
+  -p, --provider <name>   Use specific provider for this command (gemini, copilot, claude)
   -c, --context <num>     Context from previous commands (future feature)
   -h, --help              Show this help message
 
 Provider Commands:
   provider -list          List all available providers and their status
-  provider -set <name>    Set preferred provider (gemini, copilot, auto)
+  provider -set <name>    Set preferred provider (gemini, copilot, claude, auto)
 
 Examples:
   gen "List all directories in current folder"
