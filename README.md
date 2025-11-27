@@ -16,11 +16,22 @@ Use at your own risk. This tool can generate destructive commands. But hey, you'
 
 ## Installation
 
+**Step 1: Install the package**
 ```bash
 npm install -g @tinykode/gen
+```
+
+**Step 2: Configure zsh integration (optional, zsh only)**
+
+If you're using **zsh**, run the configuration to add the write helper as a zsh function:
+```bash
 gen configure
 source ~/.zshrc
 ```
+
+This enables commands to appear directly in your terminal input line, ready to execute.
+
+**Without zsh setup**: Commands will be printed to the console only. You'll need to copy-paste them manually.
 
 ## Prerequisites
 
