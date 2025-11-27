@@ -5,10 +5,11 @@ import GenCLI from '../src/index.js';
 describe('GenCLI', () => {
   test('should initialize with default providers', () => {
     const cli = new GenCLI();
-    assert.strictEqual(cli.providers.length, 3);
+    assert.strictEqual(cli.providers.length, 4);
     assert.strictEqual(cli.providers[0].name, 'gh');
     assert.strictEqual(cli.providers[1].name, 'gemini');
     assert.strictEqual(cli.providers[2].name, 'copilot');
+    assert.strictEqual(cli.providers[3].name, 'claude');
   });
 
   test('findAvailableProvider should return preferred provider if ready', async () => {
