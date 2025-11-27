@@ -9,7 +9,7 @@
     "gen": "src/index.js"
   },
   "scripts": {
-    "pack-and-publish": "npm version patch && npm run pack && npm publish",
+    "pack-and-publish": "npm version patch && npm pack && npm publish",
     "postinstall": "node scripts/install.js",
     "configure": "node scripts/install.js",
     "test": "LOG_LEVEL=0 node --test"
