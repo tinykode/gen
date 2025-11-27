@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { fileURLToPath } from 'url';
 import GHProvider from './providers/gh-provider.js';
 import GeminiProvider from './providers/gemini-provider.js';
 import CopilotProvider from './providers/copilot-provider.js';
@@ -9,9 +10,9 @@ import Context from './context.js';
 
 class GenCLI {
   constructor() {
-    this.installer = new Installer();
     this.config = new Config();
     this.context = new Context();
+    this.installer = new Installer();
     this.providers = [
       new GHProvider(),
       new GeminiProvider(),
@@ -135,12 +136,6 @@ function parseArgs() {
     const next = args[i + 1];
 
     switch (arg) {
-      case '-m':
-      case '--message':
-        // Legacy support - message as flag
-        options.message = next;
-        i++;
-        break;
       case '-c':
       case '--context':
         // Placeholder for future context implementation
@@ -251,6 +246,8 @@ async function main() {
   }
 }
 
-main().catch(logger.error);
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch(logger.error);
+}
 
 export default GenCLI;
