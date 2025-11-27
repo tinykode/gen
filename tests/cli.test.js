@@ -1,6 +1,6 @@
 import { test, describe, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert';
-import GenCLI from '../src/index.js';
+import { GenCLI } from '../src/cli.js';
 
 describe('GenCLI', () => {
   test('should initialize with default providers', () => {
