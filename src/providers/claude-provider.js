@@ -40,7 +40,7 @@ class ClaudeProvider extends BaseProvider {
       // Escape double quotes in the prompt to avoid shell issues
       const escapedPrompt = fullPrompt.replace(/"/g, '\\"');
 
-      const output = child_process.execSync(`claude -p -m "${this.model}" "${escapedPrompt}"`, execConfig);
+      const output = child_process.execSync(`claude -p --model "${this.model}" "${escapedPrompt}"`, execConfig);
 
       return this.extractCommand(output);
     } catch (error) {

@@ -44,4 +44,18 @@ describe('CopilotProvider', () => {
     const command = await provider.generateCommand('list files');
     assert.strictEqual(command, 'ls -la');
   });
+
+  test('generateCommand should call copilot with correct command format', async () => {
+    execSyncMock.mock.mockImplementation(() => '<command>ls -la</command>');
+    const provider = new CopilotProvider();
+    await provider.generateCommand('list files');
+
+    // Verify execSync was called with the correct command
+    const calls = execSyncMock.mock.calls;
+    assert.strictEqual(calls.length, 1);
+
+    const commandCalled = calls[0].arguments[0];
+    // Should use copilot -p format
+    assert.ok(commandCalled.includes('copilot -p'), 'Should use copilot -p format');
+  });
 });
