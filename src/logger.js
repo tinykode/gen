@@ -41,7 +41,7 @@ class Logger {
 
   debug(...args) {
     if (this.shouldLog(Logger.LEVELS.DEBUG)) {
-      console.log(...args);
+      console.log(`# DEBUG:`, ...args);
     }
   }
 }

@@ -68,14 +68,19 @@ class GenCLI {
   }
 
   async generateCommand(query, userContext = '', oneTimeProvider = null) {
-    const provider = oneTimeProvider ?
-      await this.findSpecificProvider(oneTimeProvider) :
-      await this.findAvailableProvider();
+    let provider;
+    if (oneTimeProvider) {
+      logger.debug(`Using one-time provider: ${oneTimeProvider}`);
+      provider = await this.findSpecificProvider(oneTimeProvider);
+    } else {
+      provider = await this.findAvailableProvider();
+    }
 
     const systemContext = this.context.gather();
-    const contextString = `OS: ${systemContext.os.platform} ${systemContext.os.release}, Shell: ${systemContext.shell}, CWD: ${systemContext.cwd}, Files: ${JSON.stringify(systemContext.directoryContent.map(f => f.name))}`;
+    const contextString = `OS: ${systemContext.os.platform} ${systemContext.os.release}, Shell: ${systemContext.shell};`;
     const fullContext = userContext ? `${userContext}. System Info: ${contextString}` : `System Info: ${contextString}`;
 
+    logger.debug(`[CLI] Full query: ${query}`);
     return await provider.generateCommand(query, fullContext);
   }
 

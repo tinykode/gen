@@ -48,6 +48,7 @@ describe('CopilotProvider', () => {
   test('generateCommand should call copilot with correct command format', async () => {
     execSyncMock.mock.mockImplementation(() => '<command>ls -la</command>');
     const provider = new CopilotProvider();
+    provider.clearCache(); // Clear cache to ensure execSync is called
     await provider.generateCommand('list files');
 
     // Verify execSync was called with the correct command

@@ -29,12 +29,8 @@ class ClaudeProvider extends BaseProvider {
     return true;
   }
 
-  async generateCommand(query, context = '') {
-    const systemPrompt = "You are an expert bash command generator. Generate a precise bash command that accomplishes the user's request. Optimize for compatibility with the System described in the provided context, prefer commonly available tools, and include necessary error handling. Do not include any explanations or additional information. Do not use any tools you don't need to explore for context. IMPORTANT: Return the command wrapped in <command></command> tags with no explanations.";
-
-    const fullPrompt = context ?
-      `${systemPrompt} Context: ${context}. User query: ${query}` :
-      `${systemPrompt} User query: ${query}`;
+  async _generateCommand(query, context = '') {
+    const fullPrompt = this.buildPrompt(query, context);
 
     try {
       // Escape double quotes in the prompt to avoid shell issues
@@ -46,25 +42,6 @@ class ClaudeProvider extends BaseProvider {
     } catch (error) {
       throw new Error(`Claude failed: ${error.message}`);
     }
-  }
-
-  extractCommand(output) {
-    // First, try to extract from <command></command> tags
-    const match = output.match(/<command>(.*?)<\/command>/s);
-    if (match) {
-      return match[1].trim();
-    }
-
-    // If no tags, assume the whole output is the command (or try to clean it up)
-    // Based on the prompt "Generate a precise bash command...", it might just return the command.
-    // But let's be safe and look for code blocks if present, otherwise return trimmed output.
-
-    const codeBlockMatch = output.match(/```(?:bash|zsh|sh)?\n([\s\S]*?)```/);
-    if (codeBlockMatch) {
-      return codeBlockMatch[1].trim();
-    }
-
-    return output.trim();
   }
 }
 

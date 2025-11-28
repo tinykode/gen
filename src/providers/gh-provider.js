@@ -47,12 +47,8 @@ class GHProvider extends BaseProvider {
     }
   }
 
-  async generateCommand(query, context = '') {
-    const systemPrompt = "You are an expert bash command generator. Generate a precise bash command that accomplishes the user's request. Optimize for compatibility with the System described in the provided context, prefer commonly available tools, and include necessary error handling. Do not include any explanations or additional information. Do not use any tools you don't need to explore for context. IMPORTANT: Return the command wrapped in <command></command> tags with no explanations.";
-
-    const fullPrompt = context ?
-      `${systemPrompt} Context: ${context}. User query: ${query}` :
-      `${systemPrompt} User query: ${query}`;
+  async _generateCommand(query, context = '') {
+    const fullPrompt = this.buildPrompt(query, context);
 
     try {
       // Send "exit" to exit quickly without polluting clipboard
@@ -105,21 +101,6 @@ class GHProvider extends BaseProvider {
     }
 
     throw new Error('Could not extract command from GitHub Copilot response');
-  }
-
-  compareVersions(a, b) {
-    const aParts = a.split('.').map(Number);
-    const bParts = b.split('.').map(Number);
-
-    for (let i = 0; i < Math.max(aParts.length, bParts.length); i++) {
-      const aPart = aParts[i] || 0;
-      const bPart = bParts[i] || 0;
-
-      if (aPart > bPart) return 1;
-      if (aPart < bPart) return -1;
-    }
-
-    return 0;
   }
 }
 
